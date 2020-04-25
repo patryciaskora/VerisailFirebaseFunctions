@@ -42,3 +42,17 @@ exports.inspectionDetailsRealtime = functions.database.ref('/event_inspections_d
         })
       })
     });
+
+exports.quickScan= functions.https.onCall((data, context) => {
+  const text = data.qrcodetext;
+  var db = admin.database();
+  var ref = db.ref("qrcodes/"+text);
+    ref.on("value", function(snapshot) {
+    console.log(snapshot.val());
+    var scannedDetails = JSON.stringify(snapshot.val())
+    console.log(scannedDetails);
+  }, function (errorObject) {
+    console.log("The read failed: " + errorObject.code);
+  });
+  return {qrcodetext: "hi from function"};
+});
